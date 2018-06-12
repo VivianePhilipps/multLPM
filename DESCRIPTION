@@ -1,0 +1,11 @@
+Package: multLPM
+Type: Package
+Title: Multivariate Latent Process Models
+Version: 1.0
+Date: 2018-06-12
+Author: Viviane Philipps, Cecile Proust-Lima
+Maintainer: Viviane Philipps <Viviane.Philipps@u-bordeaux.fr>
+Description: More about what it does (maybe more than one line)
+License: GPL (>= 2)
+Imports: Rcpp (>= 0.12.1), RcppArmadillo (>= 0.6.700), marqLevAlgParallel
+LinkingTo: Rcpp, RcppArmadillo

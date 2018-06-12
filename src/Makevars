@@ -1,0 +1,17 @@
+PKG_LIBS = $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+
+##'${R_HOME}/bin/Rscript -e "Rcpp:::LdFlags()"'
+
+
+FSRC = sadmvn.f
+CSRC = predcondY.cpp loglikJointMult.cpp
+
+# Define order of compilation
+OBJECTS = $(FSRC:.f=.o) $(CSRC:.cpp=.o)
+
+$(SHLIB): $(OBJECTS)
+
+
+#Setup dependencies for parallel make
+loglikJointMult.o: sadmvn.o
+
