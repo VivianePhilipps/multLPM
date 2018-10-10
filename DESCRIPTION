@@ -1,11 +1,11 @@
 Package: multLPM
 Type: Package
-Title: Multivariate Latent Process Models
+Title: Joint model for multivariate latent processes and clinical endpoints using an exact likelihood inference method
 Version: 1.0
 Date: 2018-06-12
 Author: Viviane Philipps, Cecile Proust-Lima
 Maintainer: Viviane Philipps <Viviane.Philipps@u-bordeaux.fr>
-Description: More about what it does (maybe more than one line)
+Description: The package estimates a joint model for multivariate latent processes underlying longitudinal markers and clinical endpoints. The model is fitted in the Maximum Likelihood framework by using an exact likelihood computation. The (possibly multiple) clinical endpoints are either repeated endpoints collected at repeated times or a time to event discretized into intervals of time. 
 License: GPL (>= 2)
 Imports: Rcpp (>= 0.12.1), RcppArmadillo (>= 0.6.700), marqLevAlgParallel
 LinkingTo: Rcpp, RcppArmadillo
