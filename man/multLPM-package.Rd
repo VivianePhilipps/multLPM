@@ -3,11 +3,10 @@
 \alias{multLPM}
 \docType{package}
 \title{
-Multivariate Latent Process Models
+Joint model for multivariate latent processes and clinical endpoints using an exact likelihood inference method
 }
 \description{
-More about what it does (maybe more than one line)
-~~ A concise (1-5 lines) description of the package ~~
+The package estimates a joint model for multivariate latent processes underlying longitudinal markers and clinical endpoints. The model is fitted in the Maximum Likelihood framework by using an exact likelihood computation. The (possibly multiple) clinical endpoints are either repeated endpoints collected at repeated times or a time to event discretized into intervals of time. 
 }
 
 \details{
