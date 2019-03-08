@@ -667,7 +667,7 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
         idcause <- matrix(0,nbevt,nvarexplD)
         modmat1 <- NULL
         modmat2 <- NULL
-
+        Xseuil <- NULL
 
         namesevt1 <- NULL
         if(D1[[3]]!=1)
@@ -1115,7 +1115,7 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
                         ## ntr
                         if(mod$linktype[m]==0) ntr <- c(ntr,2)
                         if(mod$linktype[m]==1) ntr <- c(ntr,4)
-                        if(mod$linktype[m]==2) ntr <- c(ntr,length(na.omit(mod$linknodes[,m]))+2)
+                        if(mod$linktype[m]==2) ntr <- c(ntr,mod$nbnodes[m]+2)
                     }
 
                 ## mettre dans l ordre
@@ -1754,3 +1754,4 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
 ## JointMult(Y=list(m1,m2),D=diag1~Xt,var.time="temps",data=dtest)
 
 ## JointMult(Y=list(m1,m2),D=deces~X,var.time="temps",data=dtest,breaks=c(0,0.3,0.5,0.8,1),B=c(-0.3,0.1,1.5,9,4,8,2,0.8,0,-0.5,1,0.1,5,9,1,0.2,0.1,0,0.1,0.05))
+

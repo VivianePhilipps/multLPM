@@ -37,7 +37,8 @@ between dimensions.
     \code{indicator} the repeated event indicator
     or \code{survBreak(T0, T, Event)} with \code{T0} the entry time,
     \code{T} the event time and \code{Event} the event indicator.
-}
+  }
+  \item{data}{data.frame containing the observations and variables}
   \item{var.time}{
 a character vector indicating the name of the time variable of each
 dimension. The scales of these
