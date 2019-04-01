@@ -392,7 +392,7 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
                 if(discretise[2]==0)
                     {
                         ## 2e evt de type diagnostic
-                        dataD2 <- data[,c(subject,entry,var.time[K+2],dc,setdiff(unique(c(varexplD2,nomsX)),c(var.time,entry[2])))]
+                        dataD2 <- data[,c(subject,entry[2],var.time[K+2],dc,setdiff(unique(c(varexplD2,nomsX)),c(var.time,entry[2])))]
                         dataD2 <- na.omit(dataD2)
                         dataD2 <- dataD2[order(dataD2[,1],dataD2[,3]),]
 
@@ -468,28 +468,36 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
                         ni01 <- NULL
                         ni02 <- NULL
                         for(i in 1:nrow(D))
+                        {
+                            if(D[i,2]==0)
                             {
-                                if(D[i,2]==1)
-                                    {
-                                        dataD1bis <- rbind(dataD1bis,dataD1[which(dataD1[,1]==D[i,1]),])
-                                        
-                                        di2 <- dataD2[which((dataD2[,1]==D[i,1]) & (dataD2[,2]<=D[i,3])),] # ? a voir si < ou <= !**
-                                        di2[,3] <- 0
-                                        dataD2bis <- rbind(dataD2bis,di2)
-                                    }
-                                if(D[i,2]==2)
-                                    {
-                                        dataD2bis <- rbind(dataD2bis,dataD2[which(dataD2[,1]==D[i,1]),])
-                                        
-                                        di1 <- dataD1[which((dataD1[,1]==D[i,1]) & (dataD1[,2]<=D[i,3])),]
-                                        di1[,3] <- 0
-                                        dataD1bis <- rbind(dataD1bis,di1)
-                                    }
-
-                                ni01 <- c(ni01,length(which(dataD1bis[,1]==D[i,1])))
-                                ni02 <- c(ni02,length(which(dataD2bis[,1]==D[i,1])))
+                                dataD1bis <- rbind(dataD1bis,dataD1[which(dataD1[,1]==D[i,1]),])
+                                dataD2bis <- rbind(dataD2bis,dataD2[which(dataD2[,1]==D[i,1]),])
                             }
-
+                            
+                            if(D[i,2]==1)
+                            {
+                                dataD1bis <- rbind(dataD1bis,dataD1[which(dataD1[,1]==D[i,1]),])
+                                
+                                di2 <- dataD2[which((dataD2[,1]==D[i,1]) & (dataD2[,3]<=D[i,3])),] # ? a voir si < ou <= !**
+                                if(nrow(di2)==0) stop(paste("Subject",D[i,1],"has no observation for event 2 \n"))
+                                di2[,4] <- 0
+                                dataD2bis <- rbind(dataD2bis,di2)
+                            }
+                            if(D[i,2]==2)
+                            {
+                                dataD2bis <- rbind(dataD2bis,dataD2[which(dataD2[,1]==D[i,1]),])
+                                
+                                di1 <- dataD1[which((dataD1[,1]==D[i,1]) & (dataD1[,3]<=D[i,3])),]
+                                if(nrow(di1)==0) stop(paste("Subject",D[i,1],"has no observation for event 1 \n"))
+                                di1[,4] <- 0
+                                dataD1bis <- rbind(dataD1bis,di1)
+                            }
+                            
+                            ni01 <- c(ni01,length(which(dataD1bis[,1]==D[i,1])))
+                            ni02 <- c(ni02,length(which(dataD2bis[,1]==D[i,1])))
+                        }
+                        
                         dataD1 <- dataD1bis
                         dataD2 <- dataD2bis
                         D <- D[,1:2]                        
@@ -1217,8 +1225,8 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
                 fix[posfix] <- 1
             }
 
-## a voir : demander 1 mesure a chaque Y ?
-
+        ## a voir : demander 1 mesure a chaque Y ?
+        
         ## rassembler nb mesures
         nmes <- cbind(nmes[,-1],ni01=as.vector(ni01))
         if(nbevt==2) nmes <- cbind(nmes,ni02=as.vector(ni02))

@@ -316,7 +316,7 @@ RcppExport SEXP loglikJointMult(SEXP b0, SEXP bfix0, SEXP fix0, SEXP Y0, SEXP X0
 	  tmpcontr += ny(k)-1;
 	  ibcontr += ny(k);
 	}
-
+      //cout << "avt U" << endl; 
       // varcov du sous-modele k 
       U(imatB,imatB) = 1; // var(u0)=1
       if(idiag(k)==1)
@@ -374,7 +374,7 @@ RcppExport SEXP loglikJointMult(SEXP b0, SEXP bfix0, SEXP fix0, SEXP Y0, SEXP X0
 	imatB += nea(k);
     }
 
-
+  //cout << "avt B" << endl;
       // effets aleatoires
       endj2=U.n_cols;
       for(j2=0;j2<endj2;j2++)
@@ -516,7 +516,7 @@ RcppExport SEXP loglikJointMult(SEXP b0, SEXP bfix0, SEXP fix0, SEXP Y0, SEXP X0
     {
       //nmes.print("nmes=");
 
-      //cout << "i=" << i << endl;
+      //      cout << "i=" << i << endl;
       //t = clock();
       vrais_i=0.0;
       ni01 = nmes(i,M); // nombre d'evaluation de la demence
@@ -1164,7 +1164,7 @@ RcppExport SEXP loglikJointMult(SEXP b0, SEXP bfix0, SEXP fix0, SEXP Y0, SEXP X0
  
       vrais_i = as_scalar( -ni*log(2*datum::pi) -log(det(VK)) - 
 		    trans(Hyi-muiK)*invVK*(Hyi-muiK))/2 + jac;
-      //if(i<10)  cout << "vrais_i=" << vrais_i << endl;
+      //  cout << "vrais_i=" << vrais_i << endl;
 
       vrais_y += as_scalar( -ni*log(2*datum::pi) -log(det(VK)) - 
 		    trans(Hyi-muiK)*invVK*(Hyi-muiK))/2 + jac;
@@ -1279,8 +1279,8 @@ RcppExport SEXP loglikJointMult(SEXP b0, SEXP bfix0, SEXP fix0, SEXP Y0, SEXP X0
 	    }
 	  Gam2 = kron(trans(gamma2*varD(span(nvarD1+1,nvarD1+1+nvarD2))),GG);
 	}
-
       Gam = join_vert(Gam1,Gam2);
+      //Gam.print("Gam=");
       tGam=trans(Gam);
       seuil_i.ones(ni01+ni02); // seuil a chaque temps
       seuil_i(span(0,ni01-1)) *= dot(eta1,varD(span(0,nvarD1)));
@@ -1303,7 +1303,7 @@ RcppExport SEXP loglikJointMult(SEXP b0, SEXP bfix0, SEXP fix0, SEXP Y0, SEXP X0
 	    }
 	}
 
-
+      //seuil_i.print("seuil=");
 
 
       // on conditionne sur Lambda pour calculer la vrais //
@@ -1422,7 +1422,7 @@ RcppExport SEXP loglikJointMult(SEXP b0, SEXP bfix0, SEXP fix0, SEXP Y0, SEXP X0
       // calcul de Phi(K*ni0) 
       sadmvn_(&dimPhi,&lower2[0],&upper2[0],&infin[0],&correl2[0],&maxpts,&abseps,&releps,&error,&value0,&inform); 
 
-      //if(i<10)  cout << "value0=" << value0 << "  error=" << error << endl;
+      //  cout << "value0=" << value0 << "  error=" << error << endl;
 
       if(inform!=0)  
 	{
@@ -1464,7 +1464,7 @@ RcppExport SEXP loglikJointMult(SEXP b0, SEXP bfix0, SEXP fix0, SEXP Y0, SEXP X0
 			    join_horiz(zeros<mat>(ni02,ni01),eye<mat>(ni02,ni02)));
 	      
 
-	  // cout << "P ok" << endl;
+	      //cout << "P ok" << endl;
 
 	      un.ones(ni0-1);
 	      upper = P*(seuil_i - Gam*muiD_K);
@@ -1518,7 +1518,7 @@ RcppExport SEXP loglikJointMult(SEXP b0, SEXP bfix0, SEXP fix0, SEXP Y0, SEXP X0
 
 	      // calcul de Phi Dem
 	      sadmvn_(&dimPhi,&lower2[0],&upper2[0],&infin[0],&correl2[0],&maxpts,&abseps,&releps,&error,&value1,&inform);
-	      //if(i<10) cout << "value1=" << value1 << "  error=" << error << endl;
+	      //cout << "value1=" << value1 << "  error=" << error << endl;
 
 	      
  	      if(inform!=0)      
@@ -1545,7 +1545,7 @@ RcppExport SEXP loglikJointMult(SEXP b0, SEXP bfix0, SEXP fix0, SEXP Y0, SEXP X0
      // cas Dc
       if(D(i,0)==2)
 	{
-	  //  cout << "D=2" << endl; 
+	  // cout << "D=2" << endl; 
 	  //dimPhi = ni01+ni02-1;
 	  dimPhi -= 1;
 	  if(dimPhi>0)
@@ -1594,7 +1594,7 @@ RcppExport SEXP loglikJointMult(SEXP b0, SEXP bfix0, SEXP fix0, SEXP Y0, SEXP X0
 	      value1 = 0;
 
 	      sadmvn_(&dimPhi,&lower2[0],&upper2[0],&infin[0],&correl2[0],&maxpts,&abseps,&releps,&error,&value1,&inform);
-	      // cout << "value2=" << value1 << endl;
+	      //cout << "value2=" << value1 << endl;
 		  
 	      if(inform!=0)      
 		{
