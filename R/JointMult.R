@@ -1469,6 +1469,7 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
         if(nBM>0) names(res$bopt)[npmMM+nRE+1:nBM] <- paste("covBM",1:nBM,sep="")
         if(nbevt==1)
             {
+                idcause <- matrix(idcause,nrow=nbevt,byrow=TRUE)
                 if(nvarD1==0)
                     {
                         if(ndept1==0)

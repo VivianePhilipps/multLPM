@@ -306,7 +306,7 @@ summary.JointMult <- function(object,latex=FALSE,...)
     nvarD <- length(x$varD)
     ndept <- length(x$vardept)
     nbevt <- nrow(x$idcause)
-    if(!length(x$idcause)) nbevt <- 1
+    #if(!length(x$idcause)) nbevt <- 1
     
     if(nbevt==1)
         {
