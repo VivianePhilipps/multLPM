@@ -1703,6 +1703,12 @@ RcppExport SEXP loglikJointMult(SEXP b0, SEXP bfix0, SEXP fix0, SEXP Y0, SEXP X0
       jseuil1curr += ni01;
       jseuil2curr += ni02;
       nmesdcurr += ni0;
+
+      if(isinf(vraistot) | isnan(vraistot))
+	{
+	  vraistot = -1E9;
+	  goto fin;
+	}
     } // fin boucle i
   
  fin:
