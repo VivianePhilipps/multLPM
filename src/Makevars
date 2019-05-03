@@ -4,7 +4,7 @@ PKG_LIBS = $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
 
 
 FSRC = sadmvn.f
-CSRC = predcondY.cpp loglikJointMult.cpp
+CSRC = predcondY.cpp loglikJointMult.cpp loglikUACV.cpp
 
 # Define order of compilation
 OBJECTS = $(FSRC:.f=.o) $(CSRC:.cpp=.o)
@@ -14,4 +14,5 @@ $(SHLIB): $(OBJECTS)
 
 #Setup dependencies for parallel make
 loglikJointMult.o: sadmvn.o
+loglikUACV.o: sadmvn.o
 
