@@ -252,7 +252,7 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
                                 dataD1measure <- dataD1
                                 dataD1measure$measure <- 1
 
-                                dataD1bis <- merge(dataD1entry,dataD1measure,all=TRUE)
+                                dataD1bis <- merge(dataD1entry,dataD1measure,all=TRUE,sort=FALSE)
                                 jinf <- which(!is.finite(dataD1bis[,var.time[K+1]]))
                                 if(length(jinf))
                                     {
@@ -408,7 +408,7 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
                                 dataD2measure <- dataD2
                                 dataD2measure$measure <- 1
 
-                                dataD2bis <- merge(dataD2entry,dataD2measure,all=TRUE)
+                                dataD2bis <- merge(dataD2entry,dataD2measure,all=TRUE,sort=FALSE)
                                 
                                 jinf <- which(!is.finite(dataD2bis[,var.time[K+1]]))
                                 if(length(jinf))
@@ -454,13 +454,13 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
                         ## dataY <- dataYbis[,-which(colnames(dataYbis)=="t2max")]
 
                         ## matrice sujet indicateur evt
-                        D <- merge(t1max,t2max,all=FALSE) #selection ici
+                        D <- merge(t1max,t2max,all=FALSE,sort=FALSE) #selection ici
                         evt <- (D[,"t1max"]<=D[,"t2max"])*D[,"d1"]+2*(D[,"t1max"]>=D[,"t2max"])*D[,"d2"]
                         evt[which(evt==3)] <- 1 # ? !** si ex aequo, on prend D1
                         Tevt <- apply(D[,c("t1max","t2max")],1,min) # ? a voir si ok  si evt=0!**
                         D <- data.frame(D[,1],evt,Tevt)
                         colnames(D) <- c(colnames(dataY)[1],"evt","Tevt")
-                        D <- D[order(D[,1]),]
+                        ##D <- D[order(D[,1]),] #!** remettre si sort=FALSE enleve
 
                         ## dataD1 et dataD2 sans les temps post-diag
                         dataD1bis <- as.data.frame(matrix(NA,0,ncol(dataD1),dimnames=list(NULL,colnames(dataD1))))
@@ -545,7 +545,7 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
                         t2max <- data.frame(t2max,intervT0=as.numeric(cut(x=t2max$t2min,breaks=breaks,labels=1:(nbr-1),include.lowest=TRUE,right=FALSE)))
 
   
-                        tmax <- merge(t2max,t1max,all=FALSE) #selection ici
+                        tmax <- merge(t2max,t1max,all=FALSE,sort=FALSE) #selection ici
                         tmax <- data.frame(tmax,intervDem=as.numeric(cut(x=tmax$t1max[which(t1max[,1] %in% t2max[,1])],breaks=breaks,labels=1:(nbr-1),include.lowest=TRUE,right=FALSE)))
                         
                         ## si dem=1, mettre dc=0
@@ -639,7 +639,7 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
                 #colnames(dataD2)[which(colnames(dataD2)==var.time[K+2])] <- colnames(dataD1)[which(colnames(dataD1)==var.time[K+1])]
                 dataD1$tdemdc <- dataD1[,var.time[K+1]]
                 dataD2$tdemdc <- dataD2[,var.time[K+2]]
-                dataD <- merge(dataD1,dataD2,all=TRUE)
+                dataD <- merge(dataD1,dataD2,all=TRUE,sort=FALSE)
                 #dataD <- dataD[order(dataD[,1],dataD[,var.time[K+1]]),]
                 dataD <- dataD[order(dataD[,1],dataD[,"tdemdc"]),]
                 idD <- c(as.numeric(!is.na(dataD[,dem])),as.numeric(!is.na(dataD[,dc])))
@@ -681,7 +681,7 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
         if(D1[[3]]!=1)
             {
                 form1 <- formula(paste("~",subject,"+",D1[3]))
-                modmat1 <- model.matrix(form1,data=dataD)[,-1,drop=FALSE]
+                modmat1 <- model.matrix(form1,data=dataD[which(!is.na(dataD[,dem])),])[,-1,drop=FALSE]
                 vars1 <- labels(terms(form1))
                 placea <- NULL
                 placeb <- NULL
@@ -713,7 +713,7 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
                 if(D2[[3]]!=1)
                     {
                         form2 <- formula(paste("~",subject,"+",D2[3]))
-                        modmat2 <- model.matrix(form2,data=dataD)[,-1,drop=FALSE]
+                        modmat2 <- model.matrix(form2,data=dataD[which(!is.na(dataD[,dc])),])[,-1,drop=FALSE]
                         vars2 <- labels(terms(form2))
                         placea <- NULL
                         placeb <- NULL
@@ -792,7 +792,7 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
 
                         Xseuil1 <- cbind(Xseuil1,un=rep(1,sum(ni01)))
                         Xseuil2 <- cbind(Xseuil2,deux=rep(2,sum(ni02)))
-                        Xseuil <- merge(Xseuil1,Xseuil2,by.x=c("un"),by.y=c("deux"),all=TRUE)
+                        Xseuil <- merge(Xseuil1,Xseuil2,by.x=c("un"),by.y=c("deux"),all=TRUE,sort=FALSE)
                         Xseuil <- Xseuil[,setdiff(colnames(Xseuil),c("un","deux")),drop=FALSE]
                         if(any(is.na(Xseuil)))
                             {
