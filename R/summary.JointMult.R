@@ -301,46 +301,9 @@ summary.JointMult <- function(object,latex=FALSE,...)
     if(isTRUE(latex)) cat("\n \\bigskip \n \n")
     cat("Submodel D: \n")
 
-    avtD <- npmMM+x$nRE+x$nBM
-
-    nvarD <- length(x$varD)
-    ndept <- length(x$vardept)
-    nbevt <- nrow(x$idcause)
-    #if(!length(x$idcause)) nbevt <- 1
+    avtD <- npmMM+x$nRE+x$nBM   
+    tmp2 <- tmp[(avtD+1):nrow(tmp),]
     
-    if(nbevt==1)
-        {
-    tmp2 <- tmp[avtD+1:(1+nvarD+ndept+K*(1+nvarD)),]
-    if(nvarD==0)
-        {
-            if(ndept==0)
-                {
-                    rownames(tmp2) <- c("Threshold",paste("Gamma",1:K,sep=""))
-                }
-            else
-                {
-                    rownames(tmp2) <- c(paste("Threshold",c("",x$vardept)),paste("Gamma",1:K,sep=""))
-                }
-        }
-    else
-        {
-            if(ndept==0)
-                {
-                    nomsseuils <- paste("Threshold" ,c("",x$varD),sep=" ")
-                }
-            else
-                {
-                    nomsseuils <- paste("Threshold" ,c("",x$varD,x$vardept),sep=" ")
-                }
-            nomspoids <- paste(paste("Gamma",rep(1:K,each=nvarD+1),sep=""),c("",x$varD),sep=" ")
-            rownames(tmp2) <- c(nomsseuils,nomspoids)
-        }
-
-}
-    else
-        {
-            tmp2 <- tmp[(avtD+1):nrow(tmp),]
-        }
     if(isTRUE(latex))
         {
             if(isTRUE(latex)) cat("\n \\bigskip \n \n")
