@@ -935,29 +935,18 @@ btobtot <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxiter
                 imatB <- imatB+nea[k]
                 iB <- iB+npmtot[k]
             }
+
+        sig <- abs(diag(U))
+        U <- -1+2*(exp(U)/(1+exp(U)))
+        corr <- t(U)
+        corr[upper.tri(U)] <- U[upper.tri(U)]
+        diag(corr) <- 1
         
-        if(chol==TRUE)
-            {
-                VRE <- t(U)%*%U
-                
-                corRE <- sweep(VRE,1,sqrt(diag(VRE)),"/")
-                corRE <- sweep(corRE,2,sqrt(diag(VRE)),"/")
-            }
-        else
-            {
-                sig <- abs(diag(U))
-                U <- -1+2*(exp(U)/(1+exp(U)))
-                corr <- t(U)
-                corr[upper.tri(U)] <- U[upper.tri(U)]
-                diag(corr) <- 1
-                
-                vc <- sweep(corr,1,sig,"*")
-                vc <- sweep(vc,2,sig,"*")
-                
-                VRE <- vc
-                
-                corRE <- corr
-            }
+        vc <- sweep(corr,1,sig,"*")
+        vc <- sweep(vc,2,sig,"*")
+        
+        VRE <- vc        
+        corRE <- corr
 
         iB <- 0
         imatB <- 0
