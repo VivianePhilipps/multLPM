@@ -6,7 +6,7 @@ RloglikUACV <- function(b0, bfix0, fix0, Y0, X0, Xd0, idD0, D0, Xseuil0, nmes0, 
 
 
 ## uacv pour calculer le fit de la partie survie ##
-#' Estimation of the Universal Approximate Cross Validation (UACV) criterion for a joint model
+#' Computation of the Universal Approximate Cross Validation (UACV) criterion for a joint model estimated by JointMult function
 #'
 #' @param model a JointMult model
 #' @param Y a list of \code{multlcmm} objects
@@ -15,7 +15,7 @@ RloglikUACV <- function(b0, bfix0, fix0, Y0, X0, Xd0, idD0, D0, Xseuil0, nmes0, 
 #' @param var.time a character vector indicating the name of the time variables
 #' @param RE an indicator of the random effect structure between dimensions
 #' @param BM an indicator of the correlation of the Brownian motions
-#' @param B vector cntaining initial values for the parameters
+#' @param B vector containing initial values for the parameters
 #' @param posfix optional vector specifying the indices in vector B of the parameters that are not estimated
 #' @param breaks optional vector specifying the break points in the case where the event time is discretized
 #' @param delayed logical vector indicating if delayed entry should be accounted for
