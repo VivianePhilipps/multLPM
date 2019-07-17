@@ -10,7 +10,7 @@ RprobaEC <- function(Bs0, Bst0, b0, Y0, X0, Xd0, D0, Xseuil0, nmes0, nv0, idx0, 
 #'
 #' @param num subject ID for whom we want to predict
 #' @param s landmark s, lower bound of the prediction interval
-#' @param t horizon t of prediction defining the prediction interval
+#' @param t horizon t defining the upper bound of the prediction interval
 #' @param model a JointMult model
 #' @param Y a list of \code{multlcmm} objects. Each multlcmm object defines the outcomes and longitudinal structure of one dimension of the model. The number of outcomes, covariates or random effects can differ between dimensions.
 #' @param D a list of two-sided formula defining the event part of the model. The left side should be survBreak(T0,T,Event) with T0 the entry time, T the event time and Event the event indicator
@@ -22,11 +22,7 @@ RprobaEC <- function(Bs0, Bst0, b0, Y0, X0, Xd0, D0, Xseuil0, nmes0, nv0, idx0, 
 #' @param breaks a vector specifying the break points for event time's discretization
 #' @param B optional vector containing values for the parameters
 #' @return the probability of continuous event in the prediction interval ]s,s+t] for a specific subject
-#' @author Cécile Proust-Lima, Viviane Philipps and Tiphaine Saulnier
-#' @references
-#' Proust-Lima C, Philipps V, Dartigues JF.
-#' A joint model for multiple dynamic processes and clinical endpoints: application to Alzheimer's disease.
-#' arXiv preprint arXiv:1803.10043, 2018.
+#' @author Cecile Proust-Lima, Viviane Philipps and Tiphaine Saulnier
 #' 
 #' @export
 
@@ -145,7 +141,7 @@ PredEC <- function(num,s,t,model,Y,D,data,ID,var.time,RE="block-diag",BM="diag",
         colnames(datam)[which(colnames(datam)==var.time[k])] <- "timeT"
         colnames(datam)[which(colnames(datam)==Ynames[[k]][m])] <- "measureY"
         Xplus <- setdiff(colnames(datam),colnames(dataY))  # renvoie les noms des colonnes de datam qu il n y a pas dans dataY
-        if(length(Xplus)) # si il y en a, alors ces colonnes vont être ajoutees a dataY
+        if(length(Xplus)) # si il y en a, alors ces colonnes vont etre ajoutees a dataY
         {
           for(l in 1:length(Xplus))
           {
@@ -156,7 +152,7 @@ PredEC <- function(num,s,t,model,Y,D,data,ID,var.time,RE="block-diag",BM="diag",
         }
         
         Xmqt <- setdiff(colnames(dataY),colnames(datam))  # renvoie les noms des colonnes de dataY qu il n y a pas dans datam
-        if(length(Xmqt)) # si il y en a, alors ces colonnes vont être ajoutees a datam
+        if(length(Xmqt)) # si il y en a, alors ces colonnes vont etre ajoutees a datam
         {
           for(l in 1:length(Xmqt))
           {
