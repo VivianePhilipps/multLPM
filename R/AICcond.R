@@ -6,7 +6,7 @@ RloglikUACV <- function(b0, bfix0, fix0, Y0, X0, Xd0, idD0, D0, Xseuil0, nmes0, 
 
 
 ## AICcond pour calculer le fit de la partie survie ##
-#' Computation of the Conditionnal Akaike Information Criterion (AICcond) for a joint model estimated by JointMult function
+#' Computation of the Conditional Akaike Information Criterion (AICcond) for a joint model estimated by JointMult function
 #'
 #' @param model a JointMult model
 #' @param Y a list of \code{multlcmm} objects
@@ -19,9 +19,14 @@ RloglikUACV <- function(b0, bfix0, fix0, Y0, X0, Xd0, idD0, D0, Xseuil0, nmes0, 
 #' @param posfix optional vector specifying the indices in vector B of the parameters that are not estimated
 #' @param breaks optional vector specifying the break points in the case where the event time is discretized
 #' @param delayed logical vector indicating if delayed entry should be accounted for
-#' @return the value of the Universal Approximate Cross Validation criterion
-#' @author Cecile Proust-Lima and Viviane Philipps
+#' @return A list containing : \item{AICcond}{the conditional Akaike Information Criterion} 
+#' \item{vrais2i}{a vector containing individual contributions to the conditional and total log-likelihood}
+#' \item{npm}{the number of estimated parameters for the joint model}
+#' \item{npmtot}{a vector containing the number of estimated parameters of each longitudinal submodel}
+#' @author Tiphaine Saulnier, Cecile Proust-Lima and Viviane Philipps
 #' @references
+#' Zhang et al, Assessing model fit in joint models of longitudinal and survival data 
+#' with applications to cancer clinical trials. Statistics in medicine 2014 vol. 33, no 27, p. 4715-4733.
 #' 
 #' @export
 
