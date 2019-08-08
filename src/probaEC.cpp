@@ -956,7 +956,7 @@ RcppExport SEXP probaEC(SEXP Bs0, SEXP Bst0, SEXP b0, SEXP Y0, SEXP X0, SEXP Xd0
   //cout << "value1 = " << value1 << endl;
   //cout << "value2 = " << value2 << endl;
 
-  proba = value2/value1;
+  proba = 1-value2/value1; // proba d avoir l event entre s et s+t
   
   cout << "proba = " << proba << endl;
   
