@@ -7,8 +7,8 @@ static R_CallMethodDef callMethods[] = {
   {"loglikUACV", (DL_FUNC) &loglikUACV, 26},
   {"loglikJointMult", (DL_FUNC) &loglikJointMult, 26},
   {"predcondY", (DL_FUNC) &predcondY, 18},
-  {"predcondY", (DL_FUNC) &predcondY, 18},
-  {"probaEC", (DL_FUNC) &predcondY, 20},
+  {"probaEC", (DL_FUNC) &probaEC, 20},
+  {"probaED", (DL_FUNC) &probaED, 20},
   {NULL, NULL, 0}
 };
 

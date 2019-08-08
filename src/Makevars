@@ -4,7 +4,7 @@ PKG_LIBS = $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
 
 
 FSRC = sadmvn.f
-CSRC = predcondY.cpp loglikJointMult.cpp loglikUACV.cpp probaEC.cpp
+CSRC = predcondY.cpp loglikJointMult.cpp loglikUACV.cpp probaEC.cpp probaED.cpp
 
 # Define order of compilation
 OBJECTS = $(FSRC:.f=.o) $(CSRC:.cpp=.o)
@@ -16,4 +16,5 @@ $(SHLIB): $(OBJECTS)
 loglikJointMult.o: sadmvn.o
 loglikUACV.o: sadmvn.o
 probaEC.o: sadmvn.o
+probaED.o: sadmvn.o
 
