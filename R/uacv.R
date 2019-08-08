@@ -24,7 +24,7 @@ RloglikUACV <- function(b0, bfix0, fix0, Y0, X0, Xd0, idD0, D0, Xseuil0, nmes0, 
 #' @references
 #' Commenges D, Proust-Lima C, Samieri C, Liquet B.
 #' A universal approximate cross-validation criterion for regular risk functions.
-#' The International Journal of Biostatistics 2015; 11(1): 51–67.
+#' The International Journal of Biostatistics 2015; 11(1): 51-67.
 #' doi: 10.1515/ijb-2015-0004
 #' 
 #' @export

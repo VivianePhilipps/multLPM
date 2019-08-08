@@ -2,7 +2,7 @@
 % Please edit documentation in R/uacv.R
 \name{uacv}
 \alias{uacv}
-\title{Estimation of the Universal Approximate Cross Validation (UACV) criterion for a joint model}
+\title{Computation of the Universal Approximate Cross Validation (UACV) criterion for a joint model estimated by JointMult function}
 \usage{
 uacv(model, Y, D, data, var.time, RE = "block-diag", BM = "diag", B, posfix,
   breaks = NULL, delayed = TRUE)
@@ -22,7 +22,7 @@ uacv(model, Y, D, data, var.time, RE = "block-diag", BM = "diag", B, posfix,
 
 \item{BM}{an indicator of the correlation of the Brownian motions}
 
-\item{B}{vector cntaining initial values for the parameters}
+\item{B}{vector containing initial values for the parameters}
 
 \item{posfix}{optional vector specifying the indices in vector B of the parameters that are not estimated}
 
@@ -34,12 +34,12 @@ uacv(model, Y, D, data, var.time, RE = "block-diag", BM = "diag", B, posfix,
 the value of the Universal Approximate Cross Validation criterion
 }
 \description{
-Estimation of the Universal Approximate Cross Validation (UACV) criterion for a joint model
+Computation of the Universal Approximate Cross Validation (UACV) criterion for a joint model estimated by JointMult function
 }
 \references{
 Commenges D, Proust-Lima C, Samieri C, Liquet B.
 A universal approximate cross-validation criterion for regular risk functions.
-The International Journal of Biostatistics 2015; 11(1): 51–67.
+The International Journal of Biostatistics 2015; 11(1): 51-67.
 doi: 10.1515/ijb-2015-0004
 }
 \author{
