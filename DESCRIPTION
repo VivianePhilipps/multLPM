@@ -7,6 +7,6 @@ Author: Viviane Philipps, Cecile Proust-Lima
 Maintainer: Viviane Philipps <Viviane.Philipps@u-bordeaux.fr>
 Description: The package estimates a joint model for multivariate latent processes underlying longitudinal markers and clinical endpoints. The model is fitted in the Maximum Likelihood framework by using an exact likelihood computation. The (possibly multiple) clinical endpoints are either repeated endpoints collected at repeated times or a time to event discretized into intervals of time. 
 License: GPL (>= 2)
-Imports: Rcpp (>= 0.12.1), RcppArmadillo (>= 0.6.700), marqLevAlgParallel
+Imports: Rcpp (>= 0.12.1), RcppArmadillo (>= 0.6.700), marqLevAlg (>=2.0.0)
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.0.1

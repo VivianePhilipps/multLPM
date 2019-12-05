@@ -1,4 +1,4 @@
 useDynLib(multLPM, .registration=TRUE, .fixes="C_")
 exportPattern("^[[:alpha:]]+")
-import(Rcpp,RcppArmadillo,marqLevAlgParallel)
+import(Rcpp,RcppArmadillo,marqLevAlg)
 import(graphics,stats)
