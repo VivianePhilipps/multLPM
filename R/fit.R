@@ -4,6 +4,7 @@ fit_ss <- function(m,subm,data,id,y,time,breaks)
         mcall <- match.call()$m
         mcall$maxiter <- 0
         mcall$pred <- TRUE
+        mcall$B <- m$bopt
         
         mfit <- eval(mcall)
 
