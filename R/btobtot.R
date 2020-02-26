@@ -908,33 +908,34 @@ btobtot <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxiter
         iRE <- 0
                                         #browser()
         for(k in 1:K)
+        {
+            if(nvc[k]==0)
             {
-                if(nvc[k]==0)
-                    {
-                        U[imatB+1,imatB+1] <- 1
-                    }
-                else
-                    {
-                        if(nvc[k]>0 & idiag[k]==1)
-                            {
-                                diag(U[imatB+1:nea[k],imatB+1:nea[k]]) <- c(1,btot[iB+nef[k]+ncontr[k]+1:nvc[k]])
-                            }
-                        else
-                            {
-                                U[imatB+1:nea[k],imatB+1:nea[k]][upper.tri(U[imatB+1:nea[k],imatB+1:nea[k]],diag=TRUE)] <- c(1,btot[iB+nef[k]+ncontr[k]+1:nvc[k]])
-                                
-                                if((imatB>0) & (nRE>0))
-                                    {
-                                        qavt <- sum(nea[1:(k-1)])
-                                        U[1:qavt,imatB+1:nea[k]] <- btot[npmMM+iRE+1:(qavt*nea[k])]
-                                        iRE <- iRE+qavt*nea[k]
-                                    }
-                                
-                            }
-                    }
-                imatB <- imatB+nea[k]
-                iB <- iB+npmtot[k]
+                U[imatB+1,imatB+1] <- 1
             }
+            else
+            {
+                if(nvc[k]>0 & idiag[k]==1)
+                {
+                    diag(U[imatB+1:nea[k],imatB+1:nea[k]]) <- c(1,btot[iB+nef[k]+ncontr[k]+1:nvc[k]])
+                }
+                else
+                {
+                    U[imatB+1:nea[k],imatB+1:nea[k]][upper.tri(U[imatB+1:nea[k],imatB+1:nea[k]],diag=TRUE)] <- c(1,btot[iB+nef[k]+ncontr[k]+1:nvc[k]])
+                }
+            }
+            
+            if((imatB>0) & (nRE>0))
+            {
+                qavt <- sum(nea[1:(k-1)])
+                U[1:qavt,imatB+1:nea[k]] <- btot[npmMM+iRE+1:(qavt*nea[k])]
+                iRE <- iRE+qavt*nea[k]
+            }
+                       
+            
+            imatB <- imatB+nea[k]
+            iB <- iB+npmtot[k]
+        }
 
         sig <- abs(diag(U))
         U <- -1+2*(exp(U)/(1+exp(U)))
@@ -962,18 +963,19 @@ btobtot <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxiter
                                 if(idiag[k]==0)
                                     {
                                         btot[iB+nef[k]+ncontr[k]+1:nvc[k]] <- vtmp[upper.tri(vtmp,diag=TRUE)][-1]
-                                        
-                                        if((imatB>0) & (nRE>0))
-                                            {
-                                                qavt <- sum(nea[1:(k-1)])
-                                                covRE <- c(covRE,as.vector(VRE[1:qavt,imatB+1:nea[k]]))
-                                            }
                                     }
                                 else
                                     {
                                         btot[iB+nef[k]+ncontr[k]+1:nvc[k]] <- diag(vtmp)[-1]
                                     }
                             }
+                                        
+                        if((imatB>0) & (nRE>0))
+                        {
+                            qavt <- sum(nea[1:(k-1)])
+                            covRE <- c(covRE,as.vector(VRE[1:qavt,imatB+1:nea[k]]))
+                        }
+                        
                         imatB <- imatB+nea[k]
                     }
                 iB <- iB+nef[k]+ncontr[k]+nvc[k]+ncor[k]+ny[k]+nalea[k]+ntrtot[k]
