@@ -4,6 +4,12 @@ RloglikJointMult <- function(b0, bfix0, fix0, Y0, X0, Xd0, idD0, D0, Xseuil0, nm
     }
 
 
+predcondY <- function(b0, bfix0, fix0, Y0, X0, nmes0, nv0, idx0, idiag0, ncor0, ny0, nalea0, ntr0, link0, nodes0, nRE0, nBM0, chol0)
+    {
+        .Call("predcondY",b0, bfix0, fix0, Y0, X0, nmes0, nv0, idx0, idiag0, ncor0, ny0, nalea0, ntr0, link0, nodes0, nRE0, nBM0, chol0)
+    }
+
+
 ## D : liste de 1 ou 2 formules avec a gauche
 ##      longDiag(age0,age,dem) si on a deja des mesures repetees dans age et dem
 ##  ou
@@ -1228,6 +1234,7 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
         ## a voir : demander 1 mesure a chaque Y ?
         
         ## rassembler nb mesures
+        uniqueid <- nmes[,1]
         nmes <- cbind(nmes[,-1],ni01=as.vector(ni01))
         if(nbevt==2) nmes <- cbind(nmes,ni02=as.vector(ni02))
         nmes <- cbind(nmes,ni0=as.vector(ni0))
@@ -1444,7 +1451,7 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
                                   epsa=eps[1],epsb=eps[2],epsd=eps[3],
                                   digits=8,print.info=verbose,blinding=FALSE,
                                   multipleTry=25,file=file,
-                                  nproc=nproc,maxiter=maxiter, 
+                                  nproc=nproc,maxiter=maxiter,minimize=FALSE, 
                                   bfix0=bfix,fix0=fix,Y0=Y,X0=X,Xd0=Xd,D0=D,
                                   idD0=idD,nbevt0=nbevt,idcause0=idcause,
                                   Xseuil0=Xseuil,nmes0=nmes,nv0=nv,idx0=idx,
@@ -1719,9 +1726,9 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
                                         ncor0=ncor,ny0=ny,nalea0=nalea,
                                         ntr0=ntr,link0=link,nodes0=nodes,
                                         nRE0=nRE,nBM0=nBM,chol0=ch)
-                
-                sujet <- unlist(apply(niparK,2,function(n) rep(id,n)))
-                predHY <- cbind(dimension,outcome,sujet,HY,pred_condY,Y)
+                sujet <- as.vector(apply(niparK,2,function(n) rep(uniqueid,n)))
+                #browser()
+                predHY <- data.frame(dimension,outcome,sujet,HY,pred_condY,Y)
                 colnames(predHY) <- c("dimension","outcome","subject","obs","pred","Y")
                 rownames(predHY) <- NULL
                 
