@@ -1101,6 +1101,7 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
                 xk <- NULL
                 id <- NULL
                 outcome <- NULL
+                levid <- unique(dataY[,1])
                 for(m in 1:ny[k])
                     {
                         datam <- dataY[which((dataY$processK==k) & (dataY$outcomeM==m)),]
@@ -1108,12 +1109,14 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
                         colnames(datam)[which(colnames(datam)=="measureY")] <- mod$Ynames[m]
                         yk <- c(yk,datam[,mod$Ynames[m]])
                         xk <- rbind(xk,model.matrix(formula(paste("~",formk)),data=datam))
-                        id <- c(id,as.numeric(factor(datam[,1]))) # ? va poser pb si pas les memes sujets pr chaque outcome !**
+                        id <- c(id,as.numeric(factor(datam[,1],levels=levid))) # ? va poser pb si pas les memes sujets pr chaque outcome !**
                         outcome <- c(outcome,rep(m,nrow(datam)))
 
                         ## nb mesures
-                        nmesm <- table(datam[,1])
-                        nmesm <- data.frame(id=names(nmesm),nm=as.vector(nmesm))
+                        #nmesm <- table(datam[,1])
+                        #nmesm <- data.frame(id=names(nmesm),nm=as.vector(nmesm))
+                        nmesm <- rle(datam[,1])
+                        nmesm <- data.frame(id=nmesm[[2]],nm=nmesm[[1]])
                         if((k==1) & (m==1))
                             {
                                 nmes <- nmesm
@@ -1122,7 +1125,7 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
                         else
                             {
                                 old <- colnames(nmes)
-                                nmes <- merge(nmes,nmesm,by="id",all=TRUE,sort=FALSE)
+                                nmes <- merge(nmes,nmesm,by="id",all=TRUE)#,sort=FALSE)
                                 colnames(nmes) <- c(old,paste("k",k,"m",m,sep=""))
                             }
                         
@@ -1231,7 +1234,6 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
                 fix[posfix] <- 1
             }
 
-        ## a voir : demander 1 mesure a chaque Y ?
         
         ## rassembler nb mesures
         uniqueid <- nmes[,1]

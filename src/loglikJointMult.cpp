@@ -578,8 +578,29 @@ RcppExport SEXP loglikJointMult(SEXP b0, SEXP bfix0, SEXP fix0, SEXP Y0, SEXP X0
 	  //transfos
 	  for(m=m0; m<m0+ny(k); m++)
 	    {
-	      if(nmes(i,m)==0) continue; // !ne devrait pas arriver, gerer dans R!
-
+	      if(nmes(i,m)==0)
+		{
+		  if(link(m)==0)
+		    {
+		      tmpntr += 2;
+		      inodes += 2;
+		    }
+		  
+		  if(link(m)==1)
+		    {
+		      tmpntr += 4;
+		      inodes += 2;
+		    }
+		  
+		  if(link(m)==2)
+		    {
+		      tmpntr += ntr(m);
+		      inodes += ntr(m)-2;
+		    }
+		  
+		  continue; 
+		}
+	      
 	      niparK(k) += nmes(i,m);
 
 	      // construire H(Y) et calculer le jacobien
@@ -801,8 +822,11 @@ RcppExport SEXP loglikJointMult(SEXP b0, SEXP bfix0, SEXP fix0, SEXP Y0, SEXP X0
 		  ll=0;
 		  for(m=m0; m<m0+ny(k); m++)
 		    {
-		      Xcontri(span(jcurr+tmpnmes,jcurr+tmpnmes+nmes(i,m)-1),ny(k)*pcontr+ll) = Xk(span(nmescurr(k)+tmpnmes,nmescurr(k)+tmpnmes+nmes(i,m)-1),l);
-		      ll += 1;
+		      if(nmes(i,m)>0)
+			{
+			  Xcontri(span(jcurr+tmpnmes,jcurr+tmpnmes+nmes(i,m)-1),ny(k)*pcontr+ll) = Xk(span(nmescurr(k)+tmpnmes,nmescurr(k)+tmpnmes+nmes(i,m)-1),l);
+			}
+		      ll += 1;	
 		      tmpnmes += nmes(i,m);
 		    }
 		  
