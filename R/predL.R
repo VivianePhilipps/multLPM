@@ -35,7 +35,7 @@ predL <- function(m,newdata,plot=TRUE,add=FALSE,mfrow=NULL,confint=FALSE,...)
     }
     else
     {
-                                        #ylim <- rbind(rep(-10,K),rep(10,K))
+        ylim <- rbind(rep(-10,K),rep(10,K))
     }
     if(length(dots$xlim))
     {
@@ -43,7 +43,7 @@ predL <- function(m,newdata,plot=TRUE,add=FALSE,mfrow=NULL,confint=FALSE,...)
     }
     else
     {
-                                        #xlim <- rbind(rep(min(newdata[,1]),K),rep(max(newdata[,1]),K))
+        xlim <- rbind(rep(min(newdata[,1]),K),rep(max(newdata[,1]),K))
     }
     
     
@@ -69,8 +69,8 @@ predL <- function(m,newdata,plot=TRUE,add=FALSE,mfrow=NULL,confint=FALSE,...)
             {
                 if(isTRUE(add))
                 {
-                    jk <- (k-1) %% par("mfg")[3] +1
-                    ik <- (k-1) %/% par("mfg")[3]  +1
+                    ik <- (k-1) %% par("mfg")[3] +1
+                    jk <- (k-1) %/% par("mfg")[3]  +1
                     par(mfg=c(ik,jk),usr=usr[,k])
                                         #par(mfg=c(k,1),usr=usr[,k])
                     do.call("plot",c(list(x=pr,add=TRUE,ylim=ylim[,k]),dotsk))
