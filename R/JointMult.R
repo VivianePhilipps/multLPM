@@ -1718,7 +1718,7 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
                         iB <- iB+res$nef[k]+res$ncontr[k]+res$nvc[k]+res$ncor[k]+res$ny[k]+res$nalea[k]+res$ntrtot[k]
                         m0 <- m0+ny[k]
                     }
-                
+               
                 ## predictions conditionnelles (sachant Y slt)
                 nmes <- nmes[,1:sum(ny),drop=FALSE]
                 pred_condY <- predcondY(b0=b,bfix0=bfix,fix0=fix,
@@ -1730,7 +1730,7 @@ JointMult <- function(Y,D,data,var.time,RE="block-diag",BM="diag",B,posfix,maxit
                                         nRE0=nRE,nBM0=nBM,chol0=ch)
                 sujet <- as.vector(apply(niparK,2,function(n) rep(uniqueid,n)))
                 #browser()
-                predHY <- data.frame(dimension,outcome,sujet,HY,pred_condY,Y)
+                predHY <- data.frame(dimension,outcome,as.vector(unlist(sujet)),HY,pred_condY,Y)
                 colnames(predHY) <- c("dimension","outcome","subject","obs","pred","Y")
                 rownames(predHY) <- NULL
                 
