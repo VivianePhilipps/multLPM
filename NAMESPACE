@@ -2,3 +2,6 @@ useDynLib(multLPM, .registration=TRUE, .fixes="C_")
 exportPattern("^[[:alpha:]]+")
 import(Rcpp,RcppArmadillo,marqLevAlg)
 import(graphics,stats)
+S3method(print, JointMult)
+S3method(summary, JointMult)
+

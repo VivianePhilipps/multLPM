@@ -1,0 +1,175 @@
+---
+title: 'Vignette: multLPM package : example'
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Example}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This is an example of multivariate Latent Process model implemented in mulLPM, estimated on the paquid dataset available in lcmm package. 
+
+We define : 
+
+- a cognitive dimension (dim 1) with MMSE and IST cognitive scores; 
+
+- a depression dimension (dim 2) with CESD scale which measures depressive symptomatology
+
+- the degradation process toward dementia (with repeated binary indicator of dementia diagnosis).
+
+
+## Installation of the package
+```{r, eval=FALSE}
+devtools::install_github("https://github.com/VivianePhilipps/multLPM.git")
+```
+```{r, message=FALSE}
+library(lcmm)
+library(multLPM)
+```
+
+
+## Data creation 
+
+We change the direction of the cognitive scores so that the lower the better
+```{r}
+paquid$invMMSE <- 30-paquid$MMSE
+paquid$invIST <- 40-paquid$IST
+```
+
+We define age of diagnosis (the variable agedem is the estimated age of dementia)
+```{r, warning=FALSE}
+agediag <- sapply(paquid$ID, function(i) {
+  j <- which(paquid$ID==i & (paquid$age-paquid$agedem>0))
+  res <- Inf
+  if(length(j)) res <- min(paquid$age[j])
+  return(res)})
+
+paquid$agediag <- NA
+paquid$agediag[which(paquid$dem == 0)] <- paquid$agedem[which(paquid$dem == 0)]
+paquid$agediag[which(paquid$dem == 1)] <- agediag[which(paquid$dem == 1)]
+```
+
+Longitudinal dementia indicator (missing after diagnosis)
+```{r}
+paquid$demlong <- NA
+paquid$demlong[which((paquid$dem == 0))] <- 0
+paquid$demlong[which((paquid$dem == 1) & (paquid$age < paquid$agediag))] <- 0
+paquid$demlong[which((paquid$dem == 1) & (paquid$age == paquid$agediag))] <- 1
+```
+
+Do not use measures after diagnosis
+```{r}
+after <- which(paquid$age>paquid$agediag)
+paquid[after,c("invMMSE","invIST","CESD")] <- NA
+```
+
+## One dimensional submodels 
+```{r}
+m01 <- lcmm::multlcmm(invMMSE+invIST~I((age-65)/10)*CEP, random=~1+I((age-65)/10), subject="ID", data=paquid, link="3-quant-splines")
+
+m02 <- lcmm::multlcmm(CESD~I((age-65)/10)*male, random=~1+I((age-65)/10), subject="ID", data=paquid, link="3-quant-splines")
+```
+
+Number of subjects used in each submodel
+```{r}
+m01$ns 
+m02$ns 
+```
+
+We need to have the same number of subjects in JointMult function, so we restrict to subjects used for both dimensions.
+```{r}
+subjects_m01_1 <- unique(paquid$ID[-unlist(m01$na.action[[1]])])
+subjects_m01_2 <- unique(paquid$ID[-unlist(m01$na.action[[2]])])
+subjects_m01 <- union(subjects_m01_1, subjects_m01_2)
+subjects_m02 <- unique(paquid$ID[-unlist(m02$na.action)])
+
+paquid498 <- paquid[which(paquid$ID %in% intersect(subjects_m01, subjects_m02)),]
+```
+
+## Multivariate models 
+
+Without adjustment on the dementia process
+```{r, echo=FALSE, eval=TRUE}
+load("models_vignette_multLPM.RData")
+```
+```{r, eval=FALSE}
+m <- JointMult(Y=list(m01,m02), D=list(longDiag(age_init, age, demlong)~1), var.time="age", RE="full", delayed=TRUE, data=paquid498, maxiter=50)
+```
+```{r}
+summary(m)
+```
+
+With adjustment on the dementia process, using estimation of model m as initial values
+```{r, eval=FALSE}
+m_adj <- JointMult(Y=list(m01,m02), D=list(longDiag(age_init, age, demlong)~CEP+male), var.time="age", RE="full", delayed=TRUE, data=paquid498, B=c(m$bopt[1:33],0,0,m$bopt[34],0,0,m$bopt[35],0,0), maxiter=50)
+```
+```{r}
+summary(m_adj)
+```
+
+The model did not converge. We fix a transformation parameter that is closed to 0 in order to avoid numerical problems :
+
+```{r, eval=FALSE}
+m_adj <- JointMult(Y=list(m01,m02), D=list(longDiag(age_init, age, demlong)~CEP+male), var.time="age", RE="full", delayed=TRUE, data=paquid498, B=m_adj$bopt, posfix=11, maxiter=30)
+```
+
+```{r}
+summary(m_adj)
+```
+
+
+## Postfit computations
+
+### Comparison of subject-specific predicitons and observations
+
+```{r, fig.width=11, fig.height=5.5, out.width='100%'}
+fit <- fit_ss(JointMult(Y=list(m01,m02), D=list(longDiag(age_init, age, demlong)~1), var.time="age", RE="full", delayed=TRUE, data=paquid498, B=m$bopt),
+       data=paquid498,id="ID",y=c("invMMSE","invIST","CESD"),time=rep("age",3),breaks=c(seq(65,95,2),105))
+
+par(mfrow=c(1,3))
+ plot.fit_ss(fit,which="fit",type=c("p","l","l","l"),lty=c(1,1,2,2),pch=c(19,NA,NA,NA),col=1,outcome=1,xlab="age",ylab="transformed MMSE")
+ plot.fit_ss(fit,which="fit",type=c("p","l","l","l"),lty=c(1,1,2,2),pch=c(19,NA,NA,NA),col=1,outcome=2,xlab="age",ylab="transformed IST")
+ plot.fit_ss(fit,which="fit",type=c("p","l","l","l"),lty=c(1,1,2,2),pch=c(19,NA,NA,NA),col=1,outcome=3,xlab="age",ylab="transformed CESD")
+```
+
+## Predicted trajectories
+
+Predicted trajectories in each dimension for different profiles of covariate : 
+```{r, fig.width=11, fig.height=5.5, out.width='100%'}
+d00 <- data.frame(age=seq(65,100,length.out=100), CEP=0, male=0)
+d10 <- data.frame(age=seq(65,100,length.out=100), CEP=1, male=0)
+d01 <- data.frame(age=seq(65,100,length.out=100), CEP=0, male=1)
+
+predL00 <- predL(m=m,newdata=d00,plot=FALSE,m1=m01,m2=m02,xlim=c(65,95),ylim=c(-2,2), confint=TRUE)
+predL10 <- predL(m=m,newdata=d10,plot=FALSE,m1=m01,m2=m02,xlim=c(65,95),ylim=c(-2,2), confint=TRUE)
+predL01 <- predL(m=m,newdata=d01,plot=FALSE,m1=m01,m2=m02,xlim=c(65,95),ylim=c(-2,2), confint=TRUE)
+
+par(mfrow=c(1,2))
+plot(predL00[[1]],lwd=2,xlim=c(65,100),ylim=c(-3,6),legend=NULL,main="cognition",shades=TRUE)
+plot(predL10[[1]],lwd=2,xlim=c(65,100),ylim=c(-3,6),legend=NULL,add=TRUE,shades=TRUE,col=2)
+legend(x="toplef",legend=c("low educated", "high educated"), lwd=2, col=1:2, box.lty=0)
+plot(predL00[[2]],lwd=2,xlim=c(65,100),ylim=c(-3,6),legend=NULL,main="depression",shades=TRUE)
+plot(predL01[[2]],lwd=2,xlim=c(65,100),ylim=c(-3,6),legend=NULL,add=TRUE,shades=TRUE,col=3)
+legend(x="toplef",legend=c("women", "men"), lwd=2, col=c(1,3), box.lty=0)
+
+```
+
+The degradation process is computed as the linear combination of the two latent processes and plotted against time :
+
+```{r, fig.width=11, fig.height=5.5, out.width='100%'}
+degr00 <- m$bopt[34] * predL00[[1]]$pred[,1] + m$bopt[35] * predL00[[2]]$pred[,1]
+degr10 <- m$bopt[34] * predL10[[1]]$pred[,1] + m$bopt[35] * predL10[[2]]$pred[,1]
+degr01 <- m$bopt[34] * predL01[[1]]$pred[,1] + m$bopt[35] * predL01[[2]]$pred[,1]
+
+plot(x=seq(65,100,length.out=100), y=degr00, type="l", col=1, lwd=2, xlab="age", ylab="degradation process", ylim=c(-1,4))
+lines(x=seq(65,100,length.out=100), y=degr10, type="l", col=2, lwd=2)
+lines(x=seq(65,100,length.out=100), y=degr01, type="l", col=3, lwd=2)
+abline(h=m$bopt[33], lty=2, col=1)
+```
+
+The black and green lines cross the threshold at about 93 years, suggesting that low educated subjects (women in black and men in green) will be demented at 93 years, whereas high educated women (red line) will not be diagnosed before 100 years.
+
